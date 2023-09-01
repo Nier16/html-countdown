@@ -1,0 +1,84 @@
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    #__udc-pin-countdown {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #__udc-pin-countdown-circle {
+        width: 30px;
+        height: 30px;
+        position: relative;
+    }
+
+    #__udc-pin-countdown-circle-background {
+        --time-left: 0%;
+        rotate: 360deg;
+        position: absolute;
+        background: conic-gradient(
+                rgba(255, 255, 255, 0) var(--time-left),
+                rgba(255, 255, 255, 1) var(--time-left)
+        );
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        animation: bounce 5s linear;
+        transform: scale(-1, 1);
+    }
+
+    #__udc-pin-countdown-circle-border {
+        width: 100%;
+        height: 100%;
+        border: 5px darkseagreen solid;
+        border-radius: 50%;
+    }
+</style>
+<div id="__udc-pin-countdown">
+    <div id="__udc-pin-countdown-circle">
+        <div id="__udc-pin-countdown-circle-background"></div>
+        <div id="__udc-pin-countdown-circle-border"></div>
+    </div>
+    <p id="__udc-pin-countdown-circle-text"></p>
+</div>
+
+<script>
+    const SECOND_IN_MS = 1000;
+    const UPDATE_INTERVAL = SECOND_IN_MS / 60;
+    const text = document.getElementById('__udc-pin-countdown-circle-text');
+    const activateSkill = (target, t) => {
+        console.log('start');
+        target.style = '--time-left: 100%';
+        let time = t;
+
+        // Update remaining cooldown
+        const intervalID = setInterval(() => {
+            console.log(time);
+            time -= UPDATE_INTERVAL;
+            if (time < 0) {
+                target.textContent = '';
+                target.style = '';
+
+                clearInterval(intervalID);
+            }
+            const passedTime = time / t * 100;
+            target.style = `--time-left: ${passedTime}%`;
+
+            const timeLeft = Math.ceil(time / SECOND_IN_MS);
+
+            if (timeLeft > 1) {
+                text.textContent = timeLeft + ' secondes restantes';
+            } else if (timeLeft === 1) {
+                text.textContent = timeLeft + ' seconde restante';
+            } else {
+                text.textContent = '';
+            }
+        }, UPDATE_INTERVAL);
+    }
+
+    activateSkill(document.getElementById('__udc-pin-countdown-circle-background'), 5000);
+</script>
